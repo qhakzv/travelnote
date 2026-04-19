@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>旅途手帖</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:        #F5F0E8;
+    --ink:          #2A1F14;
+    --muted:        #78716C;
+    --accent:       #E07A3A;
+    --accent-light: #FEF0E7;
+    --sage:         #5C7A62;
+    --sage-light:   #E8F0E9;
+    --sky:          #3B6EA5;
+    --sky-light:    #E5EDF6;
+    --meet:         #E53E3E;
+    --meet-light:   #FFF0F0;
+    --border:       rgba(28,25,23,0.08);
+  }
+  * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding-bottom: 20px;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    background: var(--ink); color: var(--cream);
+    padding: 10px 16px 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .app-header h1 { font-family:'Playfair Display',serif; font-size:1.4rem; letter-spacing:0.02em; line-height:1; }
+  .app-header .subtitle { font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.4; margin-top:2px; }
+  .notion-status { font-size:0.68rem; display:flex; align-items:center; gap:5px; margin-top:4px; opacity:0.6; }
+  .dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .dot.green { background:#68D391; }
+  .dot.gray  { background:#A0AEC0; }
+
+  /* ── Top Nav ── */
+  .top-nav {
+    background: var(--ink);
+    display: flex;
+    position: sticky; top: 58px; z-index: 49;
+    border-bottom: 2px solid rgba(255,255,255,0.06);
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .top-nav::-webkit-scrollbar { display:none; }
+  .nav-item {
+    flex: 1; min-width: 54px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 8px 4px; color: rgba(245,240,232,0.35);
+    cursor: pointer; font-size: 0.65rem; letter-spacing: 0.04em;
+    gap: 3px; border: none; background: none;
+    transition: color 0.2s; white-space: nowrap;
+  }
+  .nav-item i { font-size: 1.05rem; }
+  .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -2px; }
+
+  /* ── Pages ── */
+  .page { display:none; padding:1.25rem 1rem; }
+  .page.active { display:block; }
+
+  .section-eyebrow { font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent); margin-bottom:2px; font-weight:500; }
+  .section-title { font-family:'Noto Serif TC',serif; font-size:1.5rem; font-weight:600; margin-bottom:1.2rem; line-height:1.3; }
+
+  .card { background:#fff; border-radius:16px; padding:1.1rem 1.2rem; margin-bottom:1rem; border:1px solid var(--border); }
+  .tag { display:inline-block; font-size:0.68rem; letter-spacing:0.06em; padding:3px 10px; border-radius:99px; font-weight:500; }
+  .tag-accent { background:var(--accent-light); color:#C8622A; }
+  .tag-sage   { background:var(--sage-light); color:var(--sage); }
+  .tag-sky    { background:var(--sky-light); color:var(--sky); }
+  .tag-sky2   { background:#fff; color:var(--sky); border:1px solid rgba(59,110,165,0.28); }
+  .tag-sage2  { background:#fff; color:var(--sage); border:1px solid rgba(92,122,98,0.28); }
+  .tag-acct2  { background:#fff; color:#C8622A; border:1px solid rgba(200,98,42,0.28); }
+  .divider    { border:none; border-top:1px solid var(--border); margin:1rem 0; }
+
+  .sync-btn { display:flex; align-items:center; gap:6px; background:var(--accent); color:white; border:none; border-radius:10px; padding:9px 16px; font-size:0.82rem; cursor:pointer; font-family:inherit; font-weight:500; transition:opacity 0.2s; }
+  .sync-btn:active { opacity:0.8; }
+  .sync-btn.secondary { background:transparent; border:1px solid rgba(28,25,23,0.15); color:var(--ink); }
+
+  /* ══ 注意事項 ══ */
+  .notice-block { background:#fff; border-radius:16px; overflow:hidden; margin-bottom:0.9rem; border:1px solid var(--border); }
+  .notice-header { padding:0.9rem 1.15rem 0.75rem; display:flex; align-items:center; gap:10px; }
+  .notice-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+  .notice-body { padding:0.75rem 1.15rem 1rem; font-size:0.88rem; line-height:1.85; color:#44403C; border-top:1px solid rgba(28,25,23,0.05); }
+  .notice-body ul { list-style:none; padding:0; margin:0; }
+  .notice-body li { display:flex; gap:8px; padding:3px 0; }
+  .notice-body li::before { content:"—"; color:var(--accent); flex-shrink:0; }
+
+  /* ══ 交通 ══ */
+  .transport-card { background:#fff; border-radius:16px; overflow:hidden; margin-bottom:0.9rem; border:1px solid var(--border); }
+  .t-head-fly   { padding:10px 15px; display:flex; align-items:center; justify-content:space-between; background:#EBF3FC; border-bottom:1px solid rgba(59,110,165,0.12); }
+  .t-head-train { padding:10px 15px; display:flex; align-items:center; justify-content:space-between; background:#E8F0E9; border-bottom:1px solid rgba(92,122,98,0.14); }
+  .t-head-bus   { padding:10px 15px; display:flex; align-items:center; justify-content:space-between; background:var(--accent-light); border-bottom:1px solid rgba(200,98,42,0.14); }
+  .transport-route { display:flex; align-items:center; gap:10px; font-family:'Noto Serif TC',serif; font-size:1.05rem; font-weight:600; color:var(--ink); }
+  .time-block { display:flex; align-items:center; padding:10px 15px; background:#fff; gap:8px; border-bottom:1px solid rgba(28,25,23,0.05); }
+  .time-num { font-family:'Playfair Display',serif; font-size:1.35rem; font-weight:700; line-height:1; color:var(--ink); }
+  .time-sub { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+  .t-mid { flex:1; text-align:center; font-size:0.72rem; color:var(--muted); line-height:1.7; }
+  .transport-detail { padding:9px 15px 13px; display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+  .transport-row { font-size:0.75rem; color:var(--muted); display:flex; flex-direction:column; }
+  .transport-row strong { color:var(--ink); font-size:0.88rem; font-weight:500; margin-top:1px; }
+  .sub-label-t { font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin:10px 0 7px; }
+
+  /* ══ 行程 ══ */
+  .day-header { display:flex; align-items:center; gap:12px; margin-bottom:1rem; margin-top:1.6rem; }
+  .day-header:first-child { margin-top:0; }
+  .day-num   { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; color:var(--accent); line-height:1; min-width:34px; }
+  .day-date  { font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+  .day-title { font-family:'Noto Serif TC',serif; font-size:1rem; font-weight:600; }
+  .timeline  { position:relative; padding-left:24px; }
+  .timeline::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:1px; background:rgba(28,25,23,0.12); }
+  .tl-item  { position:relative; margin-bottom:0.9rem; }
+  .tl-dot   { position:absolute; left:-24px; top:6px; width:15px; height:15px; border-radius:50%; background:#fff; border:2px solid var(--accent); }
+  .tl-card  { background:#fff; border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+  .tl-main  { padding:0.85rem 1rem; }
+  .tl-time  { font-size:0.72rem; letter-spacing:0.07em; color:var(--muted); margin-bottom:2px; }
+  .tl-title { font-weight:500; font-size:0.98rem; margin-bottom:3px; }
+  .tl-note  { font-size:0.82rem; color:var(--muted); line-height:1.55; }
+  .tl-actions { padding:0.55rem 1rem; border-top:1px solid rgba(28,25,23,0.06); display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .map-btn  { display:flex; align-items:center; gap:5px; font-size:0.74rem; color:var(--sky); background:var(--sky-light); border:none; border-radius:8px; padding:5px 10px; cursor:pointer; font-family:inherit; text-decoration:none; font-weight:500; }
+  .meet-row   { display:flex; align-items:center; gap:7px; }
+  .meet-label { font-size:0.7rem; color:var(--meet); font-weight:500; white-space:nowrap; }
+  .meet-input { font-size:0.88rem; border:1.5px solid var(--meet); border-radius:8px; padding:3px 8px; color:var(--meet); font-weight:600; background:var(--meet-light); width:88px; font-family:inherit; text-align:center; }
+  .meet-input:focus { outline:none; }
+  .meet-input::placeholder { color:rgba(229,62,62,0.3); }
+
+  /* ══ 購物 ══ */
+  .shop-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; }
+  .shop-item { background:#fff; border-radius:14px; overflow:hidden; border:1px solid var(--border); }
+  .shop-img  { width:100%; aspect-ratio:1; background:#F5EFE6; display:flex; align-items:center; justify-content:center; font-size:2.6rem; }
+  .shop-info { padding:0.7rem 0.85rem; }
+  .shop-name  { font-size:0.85rem; font-weight:500; line-height:1.35; margin-bottom:4px; }
+  .shop-price { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--accent); }
+  .shop-curr  { font-size:0.65rem; font-weight:400; font-family:'Noto Sans TC',sans-serif; color:var(--muted); }
+  .shop-where { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+
+  /* ══ 記帳 ══ */
+  .ledger-total { background:var(--ink); border-radius:20px; padding:1.2rem 1.4rem; margin-bottom:1.2rem; color:white; }
+  .ledger-total .lbl { font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; opacity:0.5; }
+  .ledger-total .amt { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; line-height:1.1; margin-top:4px; }
+  .currency-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .c-pill { background:rgba(255,255,255,0.1); border-radius:99px; padding:3px 12px; font-size:0.72rem; opacity:0.75; }
+  .form-label { font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:5px; }
+  .form-input { width:100%; border:1.5px solid rgba(28,25,23,0.12); border-radius:10px; padding:10px 12px; font-size:0.92rem; font-family:inherit; background:white; color:var(--ink); transition:border-color 0.2s; -webkit-appearance:none; }
+  .form-input:focus { outline:none; border-color:var(--accent); }
+  select.form-input { cursor:pointer; }
+  .ledger-row { display:flex; align-items:center; padding:0.75rem 0; border-bottom:1px solid rgba(28,25,23,0.06); gap:10px; }
+  .ledger-row:last-child { border-bottom:none; }
+  .l-dot  { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .l-name { flex:1; font-size:0.9rem; }
+  .l-date { font-size:0.7rem; color:var(--muted); }
+  .l-amt  { font-weight:600; font-size:0.92rem; white-space:nowrap; }
+  .l-del  { background:none; border:none; cursor:pointer; color:rgba(28,25,23,0.2); font-size:0.8rem; padding:2px 4px; }
+  .empty-state { text-align:center; padding:2.5rem 1rem; color:var(--muted); font-size:0.88rem; }
+  .empty-state i { font-size:2rem; opacity:0.2; margin-bottom:0.75rem; display:block; }
+
+  /* ══ 行李 ══ */
+  .luggage-cat-title { font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); margin-bottom:0.6rem; font-weight:500; }
+  .luggage-item { display:flex; align-items:center; gap:12px; padding:0.72rem 0; border-bottom:1px solid rgba(28,25,23,0.06); }
+  .luggage-item:last-child { border-bottom:none; }
+  .l-cb { appearance:none; -webkit-appearance:none; width:22px; height:22px; border-radius:7px; border:2px solid rgba(28,25,23,0.18); cursor:pointer; flex-shrink:0; position:relative; transition:all 0.15s; }
+  .l-cb:checked { background:var(--sage); border-color:var(--sage); }
+  .l-cb:checked::after { content:''; position:absolute; left:5px; top:2px; width:7px; height:11px; border:2px solid white; border-top:none; border-left:none; transform:rotate(45deg); }
+  .l-label { font-size:0.92rem; transition:all 0.2s; cursor:pointer; }
+  .l-label.checked { text-decoration:line-through; color:var(--muted); opacity:0.55; }
+  .progress-bar-wrap { background:rgba(28,25,23,0.07); border-radius:99px; height:5px; margin-bottom:1.25rem; overflow:hidden; }
+  .progress-bar { height:100%; border-radius:99px; background:var(--sage); transition:width 0.4s ease; }
+  .progress-text { font-size:0.74rem; color:var(--muted); margin-bottom:0.5rem; display:flex; justify-content:space-between; }
+
+  /* ══ Modal ══ */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; display:none; align-items:flex-end; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal-sheet { background:var(--cream); border-radius:24px 24px 0 0; padding:1.5rem 1.1rem 2.5rem; width:100%; max-height:82vh; overflow-y:auto; }
+  .modal-handle { width:36px; height:4px; border-radius:2px; background:rgba(28,25,23,0.15); margin:0 auto 1.25rem; }
+  .info-box { border-radius:12px; padding:0.9rem 1rem; margin-bottom:1rem; font-size:0.76rem; line-height:1.65; }
+
+  .fade-in { animation:fadeIn 0.3s ease forwards; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div>
+    <h1>旅途手帖</h1>
+    <p class="subtitle">Travel Journal</p>
+    <div class="notion-status">
+      <span class="dot gray" id="statusDot"></span>
+      <span id="statusText">尚未連線 Notion</span>
+    </div>
+  </div>
+  <button onclick="openSettings()" style="background:rgba(245,240,232,0.1);border:none;border-radius:10px;padding:9px 11px;color:rgba(245,240,232,0.6);cursor:pointer;font-size:0.9rem;">
+    <i class="fa-solid fa-gear"></i>
+  </button>
+</header>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <button class="nav-item active" onclick="showPage('notes',this)"><i class="fa-solid fa-clipboard-list"></i><span>注意</span></button>
+  <button class="nav-item" onclick="showPage('transport',this)"><i class="fa-solid fa-plane-departure"></i><span>交通</span></button>
+  <button class="nav-item" onclick="showPage('itinerary',this)"><i class="fa-solid fa-map-location-dot"></i><span>行程</span></button>
+  <button class="nav-item" onclick="showPage('shopping',this)"><i class="fa-solid fa-bag-shopping"></i><span>購物</span></button>
+  <button class="nav-item" onclick="showPage('ledger',this)"><i class="fa-solid fa-coins"></i><span>記帳</span></button>
+  <button class="nav-item" onclick="showPage('luggage',this)"><i class="fa-solid fa-suitcase-rolling"></i><span>行李</span></button>
+</nav>
+
+<!-- PAGE 1: 注意事項 -->
+<div class="page active" id="page-notes">
+  <div class="section-eyebrow">Travel Notes</div>
+  <h2 class="section-title">旅行注意事項</h2>
+  <div id="notesContent">
+    <div class="notice-block fade-in">
+      <div class="notice-header">
+        <div class="notice-icon" style="background:#FFF3E0">📋</div>
+        <div><div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">Documents</div><div style="font-weight:500;font-size:1rem">證件準備</div></div>
+        <span class="tag tag-accent" style="margin-left:auto">必備</span>
+      </div>
+      <div class="notice-body"><ul><li>護照有效期限需超過 6 個月</li><li>泰國免簽，停留最長 30 天</li><li>信用卡備用副本掃描存雲端</li><li>旅平險保單截圖存手機</li></ul></div>
+    </div>
+    <div class="notice-block fade-in">
+      <div class="notice-header">
+        <div class="notice-icon" style="background:#E8F5E9">💊</div>
+        <div><div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">Health</div><div style="font-weight:500;font-size:1rem">健康與醫療</div></div>
+        <span class="tag tag-sage" style="margin-left:auto">注意</span>
+      </div>
+      <div class="notice-body"><ul><li>防蚊液（含 DEET 成分）必備</li><li>腸胃藥、止瀉藥自備</li><li>飲用瓶裝水，避免生冰塊</li><li>路邊攤食物注意新鮮度</li></ul></div>
+    </div>
+    <div class="notice-block fade-in">
+      <div class="notice-header">
+        <div class="notice-icon" style="background:#E3F2FD">🙏</div>
+        <div><div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">Culture</div><div style="font-weight:500;font-size:1rem">文化禮儀</div></div>
+        <span class="tag tag-sky" style="margin-left:auto">文化</span>
+      </div>
+      <div class="notice-body"><ul><li>進廟宇需著長褲長袖，脫鞋</li><li>不可觸碰僧侣或皇室相關物</li><li>雙手合十 Wai 是基本問候</li><li>腳底朝人視為不禮貌</li></ul></div>
+    </div>
+    <div class="notice-block fade-in">
+      <div class="notice-header">
+        <div class="notice-icon" style="background:#FCE4EC">💰</div>
+        <div><div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">Money</div><div style="font-weight:500;font-size:1rem">金錢與消費</div></div>
+      </div>
+      <div class="notice-body"><ul><li>泰銖 THB，1 THB ≈ 0.9 TWD</li><li>機場換匯率較差，建議市區兌換</li><li>Grab App 叫車比路邊計程車便宜</li><li>小費一般 20–50 THB</li></ul></div>
+    </div>
+  </div>
+  <div style="margin-top:0.25rem;display:flex;justify-content:flex-end">
+    <button class="sync-btn secondary" onclick="syncNotionData('notes')"><i class="fa-brands fa-neos"></i> 從 Notion 同步</button>
+  </div>
+</div>
+
+<!-- PAGE 2: 交通 -->
+<div class="page" id="page-transport">
+  <div class="section-eyebrow">Transportation</div>
+  <h2 class="section-title">交通資訊</h2>
+  <div id="transportContent">
+    <div class="sub-label-t">✈ 航班</div>
+    <div class="transport-card fade-in">
+      <div class="t-head-fly">
+        <div class="transport-route"><span>台北</span><span style="font-size:0.8rem;color:var(--muted)">→</span><span>曼谷</span></div>
+        <span class="tag tag-sky2">去程</span>
+      </div>
+      <div class="time-block">
+        <div><div class="time-num">07:30</div><div class="time-sub">TPE · T2</div></div>
+        <div class="t-mid">── 3h 50m ──<br>直飛</div>
+        <div style="text-align:right"><div class="time-num">10:20</div><div class="time-sub">BKK · T1</div></div>
+      </div>
+      <div class="transport-detail">
+        <div class="transport-row">班次<strong>TG635</strong></div>
+        <div class="transport-row">航空公司<strong>泰國航空</strong></div>
+      </div>
+    </div>
+    <div class="transport-card fade-in">
+      <div class="t-head-fly">
+        <div class="transport-route"><span>曼谷</span><span style="font-size:0.8rem;color:var(--muted)">→</span><span>台北</span></div>
+        <span class="tag tag-acct2">回程</span>
+      </div>
+      <div class="time-block">
+        <div><div class="time-num">14:45</div><div class="time-sub">BKK · T1</div></div>
+        <div class="t-mid">── 3h 55m ──<br>直飛</div>
+        <div style="text-align:right"><div class="time-num">20:40</div><div class="time-sub">TPE · T2</div></div>
+      </div>
+      <div class="transport-detail">
+        <div class="transport-row">班次<strong>TG636</strong></div>
+        <div class="transport-row">航空公司<strong>泰國航空</strong></div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="sub-label-t">🚆 城際交通</div>
+    <div class="transport-card fade-in">
+      <div class="t-head-train">
+        <div class="transport-route"><span>曼谷</span><span style="font-size:0.8rem;color:var(--muted)">→</span><span>清邁</span></div>
+        <span class="tag tag-sage2">夜臥鋪</span>
+      </div>
+      <div class="time-block">
+        <div><div class="time-num">18:00</div><div class="time-sub">Hua Lamphong</div></div>
+        <div class="t-mid">── 約 12h ──<br>臥鋪火車</div>
+        <div style="text-align:right"><div class="time-num">07:05</div><div class="time-sub">Chiang Mai</div></div>
+      </div>
+      <div class="transport-detail">
+        <div class="transport-row">列車號<strong>No. 9</strong></div>
+        <div class="transport-row">座位<strong>5號車廂 臥鋪</strong></div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:0.25rem;display:flex;justify-content:flex-end">
+    <button class="sync-btn secondary" onclick="syncNotionData('transport')"><i class="fa-brands fa-neos"></i> 從 Notion 同步</button>
+  </div>
+</div>
+
+<!-- PAGE 3: 行程 -->
+<div class="page" id="page-itinerary">
+  <div class="section-eyebrow">Itinerary</div>
+  <h2 class="section-title">每日行程</h2>
+  <div id="itineraryContent">
+    <div class="day-header">
+      <div class="day-num">01</div>
+      <div><div class="day-date">Day One · MM/DD</div><div class="day-title">抵達曼谷，感受城市氛圍</div></div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-card">
+        <div class="tl-main"><div class="tl-time">07:30 · 松山機場</div><div class="tl-title">出發，搭乘 TG635</div><div class="tl-note">建議提前 2.5 小時到機場。記得帶護照、電子機票。</div></div>
+        <div class="tl-actions"><div></div><div class="meet-row"><span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.7rem"></i> 集合</span><input class="meet-input" type="time" placeholder="--:--" data-key="meet_d1_t1" oninput="saveMeetTime(this)"></div></div>
+      </div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-card">
+        <div class="tl-main"><div class="tl-title">抵達曼谷，辦理入境</div><div class="tl-note">入境後換泰銖，前往飯店辦理入住。</div></div>
+        <div class="tl-actions"><a class="map-btn" href="https://maps.google.com/?q=Suvarnabhumi+Airport+Bangkok" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a><div class="meet-row"><span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.7rem"></i> 集合</span><input class="meet-input" type="time" placeholder="--:--" data-key="meet_d1_t2" oninput="saveMeetTime(this)"></div></div>
+      </div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-card">
+        <div class="tl-main"><div class="tl-time">14:00 · Silom Road</div><div class="tl-title">臥佛寺 Wat Pho</div><div class="tl-note">參觀 46 公尺長的臥佛。著長褲長袖。門票 200 THB。</div></div>
+        <div class="tl-actions"><a class="map-btn" href="https://maps.google.com/?q=Wat+Pho+Bangkok" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a><div class="meet-row"><span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.7rem"></i> 集合</span><input class="meet-input" type="time" placeholder="--:--" data-key="meet_d1_t3" oninput="saveMeetTime(this)"></div></div>
+      </div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-card">
+        <div class="tl-main"><div class="tl-time">19:30 · Asiatique</div><div class="tl-title">河濱夜市晚餐</div><div class="tl-note">碼頭夜市，各式泰式料理與紀念品。搭免費接駁船抵達。</div></div>
+        <div class="tl-actions"><a class="map-btn" href="https://maps.google.com/?q=Asiatique+The+Riverfront+Bangkok" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a><div class="meet-row"><span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.7rem"></i> 集合</span><input class="meet-input" type="time" placeholder="--:--" data-key="meet_d1_t4" oninput="saveMeetTime(this)"></div></div>
+      </div></div>
+    </div>
+    <div class="day-header">
+      <div class="day-num">02</div>
+      <div><div class="day-date">Day Two · MM/DD</div><div class="day-title">大皇宮與水上市場</div></div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-card">
+        <div class="tl-main"><div class="tl-time">08:30 · Rattanakosin</div><div class="tl-title">大皇宮 Grand Palace</div><div class="tl-note">建議一早前往避開人潮。含玉佛寺門票 500 THB。</div></div>
+        <div class="tl-actions"><a class="map-btn" href="https://maps.google.com/?q=Grand+Palace+Bangkok" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a><div class="meet-row"><span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.7rem"></i> 集合</span><input class="meet-input" type="time" placeholder="--:--" data-key="meet_d2_t1" oninput="saveMeetTime(this)"></div></div>
+      </div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-card">
+        <div class="tl-main"><div class="tl-title">丹能沙朵水上市場</div><div class="tl-note">需包車或參加半日遊前往。船遊約 1.5 小時。</div></div>
+        <div class="tl-actions"><a class="map-btn" href="https://maps.google.com/?q=Damnoen+Saduak+Floating+Market" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a><div class="meet-row"><span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.7rem"></i> 集合</span><input class="meet-input" type="time" placeholder="--:--" data-key="meet_d2_t2" oninput="saveMeetTime(this)"></div></div>
+      </div></div>
+    </div>
+  </div>
+  <div style="margin-top:0.5rem;display:flex;justify-content:flex-end">
+    <button class="sync-btn secondary" onclick="syncNotionData('itinerary')"><i class="fa-brands fa-neos"></i> 從 Notion 同步</button>
+  </div>
+</div>
+
+<!-- PAGE 4: 購物 -->
+<div class="page" id="page-shopping">
+  <div class="section-eyebrow">Shopping List</div>
+  <h2 class="section-title">購物清單</h2>
+  <div id="shoppingContent">
+    <div class="shop-grid">
+      <div class="shop-item fade-in"><div class="shop-img">🛕</div><div class="shop-info"><div class="shop-name">象神小金佛擺件</div><div class="shop-price">350 <span class="shop-curr">THB</span></div><div class="shop-where">恰圖恰週末市場</div></div></div>
+      <div class="shop-item fade-in"><div class="shop-img">🥥</div><div class="shop-info"><div class="shop-name">椰子油護膚系列</div><div class="shop-price">420 <span class="shop-curr">THB</span></div><div class="shop-where">Boots 藥妝</div></div></div>
+      <div class="shop-item fade-in"><div class="shop-img">👘</div><div class="shop-info"><div class="shop-name">泰絲傳統布料</div><div class="shop-price">1,200 <span class="shop-curr">THB</span></div><div class="shop-where">Jim Thompson</div></div></div>
+      <div class="shop-item fade-in"><div class="shop-img">🌶️</div><div class="shop-info"><div class="shop-name">泰式辣椒醬禮盒</div><div class="shop-price">280 <span class="shop-curr">THB</span></div><div class="shop-where">King Power</div></div></div>
+      <div class="shop-item fade-in"><div class="shop-img">💆</div><div class="shop-info"><div class="shop-name">泰式藥草球</div><div class="shop-price">180 <span class="shop-curr">THB</span></div><div class="shop-where">按摩店周邊</div></div></div>
+      <div class="shop-item fade-in"><div class="shop-img">🍜</div><div class="shop-info"><div class="shop-name">泡麵零食袋</div><div class="shop-price">120 <span class="shop-curr">THB</span></div><div class="shop-where">7-Eleven</div></div></div>
+    </div>
+  </div>
+  <div style="margin-top:1rem;display:flex;justify-content:flex-end">
+    <button class="sync-btn secondary" onclick="syncNotionData('shopping')"><i class="fa-brands fa-neos"></i> 從 Notion 同步</button>
+  </div>
+</div>
+
+<!-- PAGE 5: 記帳 -->
+<div class="page" id="page-ledger">
+  <div class="section-eyebrow">Expense Tracker</div>
+  <h2 class="section-title">旅行記帳</h2>
+  <div class="ledger-total">
+    <div class="lbl">總花費（換算 TWD）</div>
+    <div class="amt" id="totalAmount">TWD 0</div>
+    <div class="currency-row" id="currencyBreakdown"></div>
+  </div>
+  <div class="card" style="margin-bottom:1.1rem">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div><label class="form-label">品項</label><input class="form-input" type="text" id="ledgerItem" placeholder="例：午餐"></div>
+      <div><label class="form-label">金額</label><input class="form-input" type="number" id="ledgerAmount" placeholder="0"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div><label class="form-label">幣別</label>
+        <select class="form-input" id="ledgerCurrency">
+          <option value="THB">THB 泰銖</option><option value="TWD">TWD 台幣</option>
+          <option value="USD">USD 美元</option><option value="JPY">JPY 日幣</option>
+          <option value="EUR">EUR 歐元</option><option value="KRW">KRW 韓幣</option>
+        </select></div>
+      <div><label class="form-label">類別</label>
+        <select class="form-input" id="ledgerCategory">
+          <option value="food">🍜 餐飲</option><option value="transport">🚖 交通</option>
+          <option value="hotel">🏨 住宿</option><option value="activity">🎡 活動</option>
+          <option value="shopping">🛍 購物</option><option value="other">📦 其他</option>
+        </select></div>
+    </div>
+    <button class="sync-btn" style="width:100%;justify-content:center" onclick="addLedgerEntry()"><i class="fa-solid fa-plus"></i> 新增記錄</button>
+  </div>
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem">
+      <span style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)">消費記錄</span>
+      <button onclick="clearLedger()" style="font-size:0.72rem;color:var(--muted);background:none;border:none;cursor:pointer">清除全部</button>
+    </div>
+    <div class="card" style="padding:0 1rem"><div id="ledgerList"><div class="empty-state"><i class="fa-solid fa-receipt"></i>還沒有記錄，快來記第一筆吧</div></div></div>
+  </div>
+</div>
+
+<!-- PAGE 6: 行李 -->
+<div class="page" id="page-luggage">
+  <div class="section-eyebrow">Packing List</div>
+  <h2 class="section-title">行李清單</h2>
+  <div class="progress-text"><span id="luggageProgress">已打包 0 / 0 樣</span><span id="luggagePercent">0%</span></div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="luggageBar" style="width:0%"></div></div>
+  <div id="luggageContent"></div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="font-family:'Noto Serif TC',serif;font-size:1.25rem;font-weight:600;margin-bottom:4px">Notion 設定</div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem">連結你的 Notion 工作區以同步旅遊資料</p>
+    <div style="margin-bottom:1rem"><label class="form-label">Integration Token</label><input class="form-input" type="password" id="settingToken" placeholder="secret_xxxxxxxxxxxxxxxxxxxx"></div>
+    <p style="font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Database IDs</p>
+    <div style="display:grid;gap:10px;margin-bottom:1.2rem">
+      <div><label class="form-label">行程表</label><input class="form-input" type="text" id="settingDbItinerary" placeholder="32位數 Database ID"></div>
+      <div><label class="form-label">交通資訊</label><input class="form-input" type="text" id="settingDbTransport" placeholder="32位數 Database ID"></div>
+      <div><label class="form-label">購物清單</label><input class="form-input" type="text" id="settingDbShopping" placeholder="32位數 Database ID"></div>
+      <div><label class="form-label">注意事項</label><input class="form-input" type="text" id="settingDbNotes" placeholder="32位數 Database ID"></div>
+    </div>
+    <div class="info-box" style="background:var(--sky-light)">
+      <strong style="color:var(--sky);display:block;margin-bottom:3px;font-size:0.76rem"><i class="fa-solid fa-circle-info"></i> 如何取得 Token？</strong>
+      <span style="color:var(--sky);font-size:0.75rem">1. 前往 notion.so/my-integrations 建立 Integration<br>2. 在資料庫頁面點「…」→「Add connections」<br>3. 資料庫 ID 在網址列的 32 碼英數字</span>
+    </div>
+    <div class="info-box" style="background:var(--accent-light)">
+      <strong style="color:#C8622A;display:block;margin-bottom:3px;font-size:0.76rem"><i class="fa-solid fa-triangle-exclamation"></i> CORS 注意</strong>
+      <span style="color:#C8622A;font-size:0.75rem">瀏覽器直接呼叫 Notion API 會被擋。建議設定免費 Cloudflare Worker Proxy。</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:1rem">
+      <button class="sync-btn secondary" style="flex:1;justify-content:center" onclick="closeSettings()">取消</button>
+      <button class="sync-btn" style="flex:1;justify-content:center" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> 儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const RATES={TWD:1,THB:0.9,USD:32.5,JPY:0.21,EUR:35.2,KRW:0.023};
+const CAT_COLORS={food:"#E07A3A",transport:"#3B6EA5",hotel:"#5C7A62",activity:"#9B6BB5",shopping:"#C8622A",other:"#888"};
+const CAT_LABEL={food:"餐飲",transport:"交通",hotel:"住宿",activity:"活動",shopping:"購物",other:"其他"};
+
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openSettings(){
+  const s=loadSettings();
+  document.getElementById('settingToken').value=s.token||'';
+  document.getElementById('settingDbItinerary').value=s.db_itinerary||'';
+  document.getElementById('settingDbTransport').value=s.db_transport||'';
+  document.getElementById('settingDbShopping').value=s.db_shopping||'';
+  document.getElementById('settingDbNotes').value=s.db_notes||'';
+  document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('open');}
+function saveSettings(){
+  const s={
+    token:document.getElementById('settingToken').value.trim(),
+    db_itinerary:document.getElementById('settingDbItinerary').value.trim(),
+    db_transport:document.getElementById('settingDbTransport').value.trim(),
+    db_shopping:document.getElementById('settingDbShopping').value.trim(),
+    db_notes:document.getElementById('settingDbNotes').value.trim(),
+  };
+  localStorage.setItem('notion_settings',JSON.stringify(s));
+  closeSettings();updateNotionStatus();alert('✅ 設定已儲存！');
+}
+function loadSettings(){try{return JSON.parse(localStorage.getItem('notion_settings')||'{}');}catch{return{};}}
+function updateNotionStatus(){
+  const s=loadSettings();
+  const dot=document.getElementById('statusDot'),txt=document.getElementById('statusText');
+  if(s.token){dot.className='dot green';txt.textContent='Notion 已設定';}
+  else{dot.className='dot gray';txt.textContent='尚未連線 Notion';}
+}
+document.getElementById('settingsModal').addEventListener('click',e=>{if(e.target.id==='settingsModal')closeSettings();});
+
+async function syncNotionData(type){
+  const s=loadSettings();
+  if(!s.token){alert('請先至右上角 ⚙️ 填入 Notion Token');openSettings();return;}
+  const dbMap={notes:s.db_notes,transport:s.db_transport,itinerary:s.db_itinerary,shopping:s.db_shopping};
+  const dbId=dbMap[type];
+  if(!dbId){alert(`請先設定「${type}」的 Database ID`);openSettings();return;}
+  try{
+    const res=await fetch(`https://api.notion.com/v1/databases/${dbId}/query`,{
+      method:'POST',
+      headers:{'Authorization':`Bearer ${s.token}`,'Notion-Version':'2022-06-28','Content-Type':'application/json'},
+      body:JSON.stringify({page_size:100})
+    });
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    handleNotionResponse(type,data.results);
+    document.getElementById('statusDot').className='dot green';
+    document.getElementById('statusText').textContent='Notion 同步成功';
+  }catch(e){alert(`同步失敗：${e.message}\n\n若出現 CORS 錯誤，請設定 Cloudflare Worker Proxy。`);}
+}
+function getProp(props,name,type){
+  const p=props[name];if(!p)return'';
+  if(type==='title')return p.title?.map(t=>t.plain_text).join('')||'';
+  if(type==='rich_text')return p.rich_text?.map(t=>t.plain_text).join('')||'';
+  if(type==='date')return p.date?.start||'';
+  if(type==='select')return p.select?.name||'';
+  if(type==='number')return p.number??'';
+  if(type==='url')return p.url||'';
+  return'';
+}
+function handleNotionResponse(type,results){
+  if(type==='notes')renderNotionNotes(results);
+  else if(type==='transport')renderNotionTransport(results);
+  else if(type==='itinerary')renderNotionItinerary(results);
+  else if(type==='shopping')renderNotionShopping(results);
+}
+function renderNotionNotes(results){
+  if(!results.length)return;
+  document.getElementById('notesContent').innerHTML=results.map(r=>{
+    const p=r.properties,title=getProp(p,'標題','title'),content=getProp(p,'內容','rich_text'),category=getProp(p,'類別','select');
+    return`<div class="notice-block fade-in"><div class="notice-header"><div class="notice-icon" style="background:#F5F0EA">📋</div><div><div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">${category}</div><div style="font-weight:500;font-size:1rem">${title}</div></div></div><div class="notice-body"><ul>${content.split('\n').filter(Boolean).map(i=>`<li>${i}</li>`).join('')}</ul></div></div>`;
+  }).join('');
+}
+function renderNotionTransport(results){
+  if(!results.length)return;
+  document.getElementById('transportContent').innerHTML=results.map(r=>{
+    const p=r.properties,type=getProp(p,'類型','select'),from=getProp(p,'出發地','title'),to=getProp(p,'目的地','rich_text'),dep=getProp(p,'出發時間','date'),arr=getProp(p,'抵達時間','rich_text'),no=getProp(p,'班次','rich_text');
+    const hc=type==='飛機'?'t-head-fly':type==='火車'?'t-head-train':'t-head-bus';
+    const tc=type==='飛機'?'tag-sky2':type==='火車'?'tag-sage2':'tag-acct2';
+    return`<div class="transport-card fade-in"><div class="${hc}"><div class="transport-route"><span>${from}</span><span style="font-size:0.8rem;color:var(--muted)">→</span><span>${to}</span></div><span class="tag ${tc}">${type}</span></div><div class="time-block"><div><div class="time-num">${dep}</div><div class="time-sub">${from}</div></div><div class="t-mid">直飛</div><div style="text-align:right"><div class="time-num">${arr}</div><div class="time-sub">${to}</div></div></div><div class="transport-detail"><div class="transport-row">班次<strong>${no}</strong></div></div></div>`;
+  }).join('');
+}
+function renderNotionItinerary(results){
+  if(!results.length)return;
+  const byDay={};
+  results.forEach(r=>{
+    const p=r.properties,day=getProp(p,'天數','number')||1,time=getProp(p,'時間','rich_text'),title=getProp(p,'景點名稱','title'),note=getProp(p,'備註','rich_text'),addr=getProp(p,'地址','rich_text'),meet=getProp(p,'集合時間','rich_text'),mapUrl=getProp(p,'Google Maps','url')||`https://maps.google.com/?q=${encodeURIComponent(addr)}`;
+    if(!byDay[day])byDay[day]=[];
+    byDay[day].push({time,title,note,mapUrl,meet,key:`notion_d${day}_${Date.now()}`});
+  });
+  document.getElementById('itineraryContent').innerHTML=Object.keys(byDay).sort((a,b)=>a-b).map(day=>{
+    const items=byDay[day];
+    return`<div class="day-header"><div class="day-num">${String(day).padStart(2,'0')}</div><div><div class="day-date">Day ${day}</div><div class="day-title">${items[0]?.title||''}</div></div></div><div class="timeline">${items.map(it=>`<div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-main">${it.time?`<div class="tl-time">${it.time}</div>`:''}<div class="tl-title">${it.title}</div>${it.note?`<div class="tl-note">${it.note}</div>`:''}</div><div class="tl-actions"><a class="map-btn" href="${it.mapUrl}" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a><div class="meet-row"><span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.7rem"></i> 集合</span><input class="meet-input" type="time" value="${it.meet||''}" placeholder="--:--" data-key="${it.key}" oninput="saveMeetTime(this)"></div></div></div></div>`).join('')}</div>`;
+  }).join('');
+  loadAllMeetTimes();
+}
+function renderNotionShopping(results){
+  if(!results.length)return;
+  document.getElementById('shoppingContent').innerHTML='<div class="shop-grid">'+results.map(r=>{
+    const p=r.properties,name=getProp(p,'名稱','title'),price=getProp(p,'價格','number'),curr=getProp(p,'幣別','select')||'THB',where=getProp(p,'地點','rich_text'),img=getProp(p,'圖示','rich_text')||'🛍';
+    return`<div class="shop-item fade-in"><div class="shop-img">${img}</div><div class="shop-info"><div class="shop-name">${name}</div><div class="shop-price">${price} <span class="shop-curr">${curr}</span></div><div class="shop-where">${where}</div></div></div>`;
+  }).join('')+'</div>';
+}
+
+function saveMeetTime(input){
+  const all=JSON.parse(localStorage.getItem('meet_times')||'{}');
+  all[input.dataset.key]=input.value;
+  localStorage.setItem('meet_times',JSON.stringify(all));
+}
+function loadAllMeetTimes(){
+  const all=JSON.parse(localStorage.getItem('meet_times')||'{}');
+  document.querySelectorAll('.meet-input').forEach(el=>{if(all[el.dataset.key])el.value=all[el.dataset.key];});
+}
+
+function getLedger(){try{return JSON.parse(localStorage.getItem('ledger')||'[]');}catch{return[];}}
+function saveLedger(arr){localStorage.setItem('ledger',JSON.stringify(arr));}
+function addLedgerEntry(){
+  const item=document.getElementById('ledgerItem').value.trim();
+  const amount=parseFloat(document.getElementById('ledgerAmount').value);
+  const currency=document.getElementById('ledgerCurrency').value;
+  const category=document.getElementById('ledgerCategory').value;
+  if(!item||isNaN(amount)||amount<=0){alert('請填入品項與金額');return;}
+  const arr=getLedger();
+  arr.unshift({id:Date.now(),item,amount,currency,category,date:new Date().toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'})});
+  saveLedger(arr);
+  document.getElementById('ledgerItem').value='';
+  document.getElementById('ledgerAmount').value='';
+  renderLedger();
+}
+function deleteLedgerEntry(id){saveLedger(getLedger().filter(e=>e.id!==id));renderLedger();}
+function clearLedger(){if(confirm('確定清除所有記帳記錄？')){saveLedger([]);renderLedger();}}
+function renderLedger(){
+  const arr=getLedger(),list=document.getElementById('ledgerList');
+  if(!arr.length){
+    list.innerHTML='<div class="empty-state"><i class="fa-solid fa-receipt"></i>還沒有記錄，快來記第一筆吧</div>';
+    document.getElementById('totalAmount').textContent='TWD 0';
+    document.getElementById('currencyBreakdown').innerHTML='';return;
+  }
+  let totalTWD=0;const byCurr={};
+  arr.forEach(e=>{const rate=RATES[e.currency]||1;totalTWD+=e.amount*rate;byCurr[e.currency]=(byCurr[e.currency]||0)+e.amount;});
+  document.getElementById('totalAmount').textContent=`TWD ${Math.round(totalTWD).toLocaleString()}`;
+  document.getElementById('currencyBreakdown').innerHTML=Object.entries(byCurr).map(([c,v])=>`<span class="c-pill">${c} ${Math.round(v).toLocaleString()}</span>`).join('');
+  list.innerHTML=arr.map(e=>`<div class="ledger-row fade-in"><div class="l-dot" style="background:${CAT_COLORS[e.category]}"></div><div style="flex:1;min-width:0"><div class="l-name">${e.item}</div><div class="l-date">${e.date} · ${CAT_LABEL[e.category]}</div></div><div class="l-amt">${e.currency} ${e.amount.toLocaleString()}</div><button class="l-del" onclick="deleteLedgerEntry(${e.id})"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+}
+
+const LUGGAGE_DEFAULT={
+  "證件 & 票務":["護照","機票（電子/紙本）","訂房確認單","旅平險保單","簽證（如需）"],
+  "衣物":["上衣 × 5","下身 × 3","輕薄外套","泳衣","睡衣","內衣褲 × 5","襪子 × 5"],
+  "盥洗 & 保養":["牙刷牙膏","洗髮精/潤髮乳","防曬乳 SPF50+","乳液保濕","卸妝棉","梳子"],
+  "電子 & 充電":["手機 + 充電線","行動電源","國際插頭轉換器","相機 + 記憶卡","耳機"],
+  "健康 & 急救":["常備藥（腸胃/頭痛）","防蚊液","OK繃","體溫計","口罩"],
+  "旅行工具":["行李秤","收納袋","雨傘/雨衣","頸枕（長途）","折疊購物袋"],
+};
+function getLuggageState(){try{return JSON.parse(localStorage.getItem('luggage')||'{}');}catch{return{};}}
+function renderLuggage(){
+  const state=getLuggageState();let total=0,done=0;
+  document.getElementById('luggageContent').innerHTML=Object.entries(LUGGAGE_DEFAULT).map(([cat,items])=>{
+    total+=items.length;
+    return`<div class="card" style="margin-bottom:0.9rem"><div class="luggage-cat-title">${cat}</div>${items.map(item=>{
+      const key=`${cat}__${item}`,checked=state[key]||false;
+      if(checked)done++;
+      const sid='cb_'+key.replace(/[\s&\/]/g,'_');
+      return`<div class="luggage-item"><input type="checkbox" class="l-cb" id="${sid}" ${checked?'checked':''} onchange="toggleLuggage('${key}',this.checked,'${sid}')"><label class="l-label ${checked?'checked':''}" for="${sid}">${item}</label></div>`;
+    }).join('')}</div>`;
+  }).join('');
+  updateLuggageProgress(done,total);
+}
+function toggleLuggage(key,checked,sid){
+  const state=getLuggageState();state[key]=checked;
+  localStorage.setItem('luggage',JSON.stringify(state));
+  const label=document.querySelector(`[for="${sid}"]`);
+  if(label)label.className=`l-label ${checked?'checked':''}`;
+  const all=Object.values(LUGGAGE_DEFAULT).flat().length;
+  const done=Object.values(getLuggageState()).filter(Boolean).length;
+  updateLuggageProgress(done,all);
+}
+function updateLuggageProgress(done,total){
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('luggageProgress').textContent=`已打包 ${done} / ${total} 樣`;
+  document.getElementById('luggagePercent').textContent=`${pct}%`;
+  document.getElementById('luggageBar').style.width=pct+'%';
+}
+
+updateNotionStatus();renderLedger();renderLuggage();loadAllMeetTimes();
+</script>
+</body>
+</html>
