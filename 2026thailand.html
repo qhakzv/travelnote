@@ -458,12 +458,12 @@ select.form-input { cursor: pointer; }
 
 <!-- ═══════ TOP NAV ═══════ -->
 <nav class="top-nav" id="topNav">
-  <button class="nav-item active" onclick="showPage('info',this)"><i class="fa-solid fa-map-pin"></i><span>當地</span></button>
-  <button class="nav-item" onclick="showPage('transport',this)"><i class="fa-solid fa-plane-departure"></i><span>交通</span></button>
-  <button class="nav-item" onclick="showPage('itinerary',this)"><i class="fa-solid fa-route"></i><span>行程</span></button>
-  <button class="nav-item" onclick="showPage('shopping',this)"><i class="fa-solid fa-bag-shopping"></i><span>購物</span></button>
-  <button class="nav-item" onclick="showPage('ledger',this)"><i class="fa-solid fa-coins"></i><span>記帳</span></button>
-  <button class="nav-item" onclick="showPage('luggage',this)"><i class="fa-solid fa-suitcase-rolling"></i><span>行李</span></button>
+  <button class="nav-item active" data-page="info"><i class="fa-solid fa-map-pin"></i><span>當地</span></button>
+  <button class="nav-item" data-page="transport"><i class="fa-solid fa-plane-departure"></i><span>交通</span></button>
+  <button class="nav-item" data-page="itinerary"><i class="fa-solid fa-route"></i><span>行程</span></button>
+  <button class="nav-item" data-page="shopping"><i class="fa-solid fa-bag-shopping"></i><span>購物</span></button>
+  <button class="nav-item" data-page="ledger"><i class="fa-solid fa-coins"></i><span>記帳</span></button>
+  <button class="nav-item" data-page="luggage"><i class="fa-solid fa-suitcase-rolling"></i><span>行李</span></button>
 </nav>
 
 <!-- ═══════════════════════════════════════════
@@ -1182,8 +1182,6 @@ select.form-input { cursor: pointer; }
 const SHOPPING_DATA = [
   // { emoji: "🥥", name: "椰子油護膚組", price: 420, currency: "THB" },
   // 範例格式，取消前面的 // 即可啟用，或仿照格式新增
-    { img: "https://image.makewebeasy.net/makeweb/m_1920x0/vaQzGnSlA/DefaultData/LINE_ALBUM_package_white_background_240613_68.jpg?v=202405291424", name: "Thai Tea (Extra Gold) Sachet Packed In Can 金罐泰式紅茶
-", price: 150, currency: "THB" },
 ];
 
 /* ════════════════════════════════════════
@@ -1253,19 +1251,29 @@ const LUGGAGE_DATA = {
 /* ════════════════════════════
    NAV
 ════════════════════════════ */
+/* ════════════════════════════
+   NAV — event delegation，避免點到子元素失效
+════════════════════════════ */
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  btn.classList.add('active');
-  /* 自動捲動選單，確保點到的 tab 在可視區域內 */
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  if (btn) btn.classList.add('active');
+  /* 自動捲動讓點到的 tab 置中 */
   const nav = document.getElementById('topNav');
-  const btnLeft = btn.offsetLeft;
-  const btnWidth = btn.offsetWidth;
-  const navWidth = nav.offsetWidth;
-  /* 讓點到的 tab 盡量置中 */
-  nav.scrollTo({ left: btnLeft - navWidth / 2 + btnWidth / 2, behavior: 'smooth' });
+  if (btn && nav) {
+    nav.scrollTo({ left: btn.offsetLeft - nav.offsetWidth / 2 + btn.offsetWidth / 2, behavior: 'smooth' });
+  }
 }
+
+/* 用事件委派掛在 nav 上，無論點 button 本身或其內的 i/span 都能正確觸發 */
+document.getElementById('topNav').addEventListener('click', function(e) {
+  const btn = e.target.closest('.nav-item');
+  if (!btn) return;
+  const pageId = btn.dataset.page;
+  if (pageId) showPage(pageId, btn);
+});
 
 /* ════════════════════════════
    MEET TIME
