@@ -1182,8 +1182,28 @@ select.form-input { cursor: pointer; }
 const SHOPPING_DATA = [
   // { emoji: "🥥", name: "椰子油護膚組", price: 420, currency: "THB" },
   // 範例格式，取消前面的 // 即可啟用，或仿照格式新增
-  { img: "https://image.makewebeasy.net/makeweb/m_1920x0/vaQzGnSlA/DefaultData/LINE_ALBUM_package_white_background_240613_68.jpg", name: "椰子油護膚組", price: 420, currency: "THB" },
-  { emoji: "🥥", name: "椰子油護膚組", price: 420, currency: "THB" },
+  { img: "https://image.makewebeasy.net/makeweb/m_1920x0/vaQzGnSlA/DefaultData/LINE_ALBUM_package_white_background_240613_68.jpg", name: "Thai Tea (Extra Gold) Sachet Packed In Can 金罐泰式紅茶", price: 150, currency: "THB" },
+  { img:  "https://image.makewebeasy.net/makeweb/m_1920x0/vaQzGnSlA/DefaultData/%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%B7%E0%B8%AD_%E0%B8%8A%E0%B8%B2%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B8%AA%E0%B8%B3%E0%B9%80%E0%B8%A3%E0%B9%87%E0%B8%88%E0%B8%8A%E0%B8%99%E0%B8%B4%E0%B8%94%E0%B8%9C%E0%B8%87_500_%E0%B8%81%E0%B8%A3%E0%B8%B1%E0%B8%A1_1.jpg", name: "Instant Thai Tea 即溶泰式奶茶-500g", price: 175, currency: "THB" },
+  { img: "https://medias.watsons.co.th/publishing/WTCTH-318845-front-zoom.jpg", name: "Fiber Flow Gummy HANDYHERB膳食纖維軟糖", price: 40, currency: "THB" },
+  { img: "https://eurasiaherbs.co/cdn/shop/files/2025-06-19_21-16-11.png", name: "Fiber Flow Gummy Plus Gluta HANDYHERB膳食纖維軟糖", price: 40, currency: "THB" },
+  { img: "https://o2o-static.lotuss.com/products/89773/75574864.jpg", name: "Dietor Day Gummy HANDYHERB減少食慾軟糖", price: 59, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/22/88/8856082005622/thumbnail/8856082005622_1-20240523085206-.jpg", name: "Dietor Night Gummy HANDYHERB澱粉阻斷軟糖", price: 59, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/19/88/8859835400019/thumbnail/8859835400019_1-20241031105814-.jpg", name: "Milk Tablet Q-Q Brand 皇家牛乳片-原味", price:22 , currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/26/88/8859835400026/thumbnail/8859835400026_1-20241031105824-.jpg", name: "Milk Tablet Q-Q Brand 皇家牛乳片-巧克力口味", price: 22, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/48/76/7622202006548/thumbnail/7622202006548_1-20250611110717-.jpg", name: "Clorets Sugar Free Mints 西瓜口味涼糖", price: 32, currency: "THB" },
+  { img: "https://medias.watsons.co.th/publishing/WTCTH-319397-front-zoom.jpg", name: "Bio Super Treatment  修護焗油髮膜系列 30ml", price: 12, currency: "THB" },
+  { img: "https://medias.watsons.co.th/publishing/WTCTH-316187-side-zoom.jpg", name: "Snake Brand After Sun Soothing Body Mist 蛇牌曬後舒緩身體噴霧 30ml", price: 89, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/07/89/8992772065207/thumbnail/8992772065207_1-20241021145225-.jpg", name: "Soffell 防蚊乳液20ml", price: 39, currency: "THB" },
+  { img: "https://medias.watsons.co.th/publishing/WTCTH-312735-side-zoom.jpg", name: "Clear Nose UV Sun Serum SPF50+ PA++++", price: 49, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/00/88/8859433797900/thumbnail/8859433797900_1-20250703135035-.jpg", name: "Merrez'Ca Skin Up Liquid SPF50 PA+++ 5g #Light nude", price: 59, currency: "THB" },
+  { img: "https://medias.watsons.co.th/publishing/WTCTH-315073-front-zoom.jpg", name: "Dazzle Me Get A Grip Makeup Setting Spray Acne Soothing 定妝噴霧", price: 159, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/15/88/8850109075315/thumbnail/8850109075315.jpg", name: "Peppermint Field Inhaler 黑管雙倍尤加利油", price: 29, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/11/88/8850109073311/thumbnail/8850109073311_1-20250121113253-.jpg", name: "Peppermint Field Inhaler 原味薄荷", price: 25, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/56/88/8850773620156/thumbnail/8850773620156_1-20260225172500-.jpg", name: "Doi Kham 100% 蜂蜜", price: 42, currency: "THB" },
+  { img: "https://m.media-amazon.com/images/I/31VRE4fwR9L._AC_.jpg", name: "泰國皇家計畫蜂蜜", price: 38, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/88/8852022033816/thumbnail/8852022033816_1-20230420160423-.jpg", name: "KEWPIE 起司醬", price: 49, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/23/88/8852022033823/thumbnail/8852022033823_1-20230420160353-.jpg", name: "KEWPIE 松露醬", price: 65, currency: "THB" },
+
 ];
 
 /* ════════════════════════════════════════
