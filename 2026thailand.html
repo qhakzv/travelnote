@@ -469,7 +469,25 @@ select.form-input { cursor: pointer; }
 <!-- ═══════════════════════════════════════════
      PAGE 1 — 當地資訊
 ═══════════════════════════════════════════ -->
-<div class="page active" id="page-info">
+  <div class="page active" id="page-info">
+  <div class="eyebrow">Travel Tips</div>
+  <h2 class="section-title">行前注意</h2>
+
+  <div class="info-block fade-in">
+    <div class="info-head">
+      <div class="info-icon" style="background:#FEF3F0">🚨</div>
+      <div><div class="info-cat">Entry</div><div class="info-title">旅遊須知</div></div>
+      <span class="tag tag-teal" style="margin-left:auto">必知</span>
+    </div>
+    <div class="info-body"><ul>
+      <li>飛機起飛前2.5小時到機場櫃台報到</li>
+      <li>1件手提行李限7KG，1件託運行李不超過20公斤</li>
+      <li>泰國撥打電話至台灣泰國國際碼001+台灣國碼886+區域號碼+電話號碼</li>
+      <li>泰國的電壓為２２０伏特，如帶電器用品請自備變壓</li>
+      <li>泰國大部份酒店因響應環保均已不提供牙膏牙刷等私人性必需品，故薦於個人衛生等因素，建議您打包於 個人行李中</li>
+    </ul></div>
+  </div>
+  <div class="page active" id="page-info">
   <div class="eyebrow">Local Info</div>
   <h2 class="section-title">當地資訊</h2>
 
@@ -481,10 +499,10 @@ select.form-input { cursor: pointer; }
     </div>
     <div class="info-body"><ul>
       <li>台灣護照免簽，可停留 30 天</li>
-      <li>【泰國數位入境卡申請】抵達泰國3天前(依泰國時間計算72小時內)可開始申請，所有旅客皆須完成TDAC(泰國數位入境卡)登記，入境泰國時，請出示 QR Code 和護照給機場人員確認。</li>
+      <li>【泰國數位入境卡申請】抵達泰國3天前(依泰國時間計算72小時內)可開始申請，所有旅客皆須完成TDAC(泰國數位入境卡)登記，入境泰國時，請出示 QR Code 和護照給機場人員確認</li>
       <li>護照效期需超過 6 個月</li>
       <li>禁止攜帶電子煙、煙草超額</li>
-      <li>入境泰國海關會隨機抽查 每人身上須準備現金2萬泰銖，每個家庭4萬泰銖。(等值貨幣即可，如美金、台幣等)。</li>
+      <li>入境泰國海關會隨機抽查，每人身上須準備現金2萬泰銖，每個家庭4萬泰銖。(等值貨幣即可，如美金、台幣等)</li>
     </ul></div>
   </div>
 
@@ -1228,7 +1246,7 @@ const LUGGAGE_DATA = {
     "機票（電子/截圖）",
     "訂房確認單",
     "旅平險保單",
-    "信用卡／現金",
+    "信用卡／台幣現金／外幣現金",
     "手機",
   ],
   "基本": [
@@ -1240,6 +1258,7 @@ const LUGGAGE_DATA = {
     "輕薄外套",
     "睡衣",
     { subcat: "保養小包", items: [
+      "化妝棉",
       "洗面乳",
       "化妝水",
       "乳液",
@@ -1259,7 +1278,9 @@ const LUGGAGE_DATA = {
     "頸枕",
     "折疊購物袋",
     "雨傘",
-    "行李秤",
+    "保冷袋",
+    "垃圾袋",
+    "熊寶貝",
   ],
   "特殊品": [
     "防蚊液（DEET）",
@@ -1271,12 +1292,12 @@ const LUGGAGE_DATA = {
     "胃藥/暈車藥",
   ],
   "旅拍用品": [
-    "相機",
+    "運動相機",
     "記憶卡",
     "備用電池",
     "腳架/自拍棒",
-    "濾鏡",
-    "清潔布",
+    "背包夾",
+    "腳架轉接頭",
   ],
 };
 
