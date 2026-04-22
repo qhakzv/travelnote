@@ -617,9 +617,9 @@ select.form-input { cursor: pointer; }
       <span class="tag tag-teal">去程航班</span>
     </div>
     <div class="t-time-row">
-      <div><div class="t-num">17:50</div><div class="t-sub">小港機場 T1</div></div>
+      <div><div class="t-num">17:50</div><div class="t-sub">小港機場</div></div>
       <div class="t-mid">── 3h 25m ──<br>直飛</div>
-      <div style="text-align:right"><div class="t-num">20:15</div><div class="t-sub">廊曼機場 T2</div></div>
+      <div style="text-align:right"><div class="t-num">20:15</div><div class="t-sub">廊曼機場 T1</div></div>
     </div>
     <div class="t-detail">
       <div class="t-row">班次<strong>FD235</strong></div>
@@ -638,9 +638,9 @@ select.form-input { cursor: pointer; }
       <span class="tag tag-teal">回程航班</span>
     </div>
     <div class="t-time-row">
-      <div><div class="t-num">02:45</div><div class="t-sub">廊曼機場 T2</div></div>
+      <div><div class="t-num">02:45</div><div class="t-sub">廊曼機場 T1</div></div>
       <div class="t-mid">── 3h 30m ──<br>直飛</div>
-      <div style="text-align:right"><div class="t-num">07:15</div><div class="t-sub">小港機場 T1</div></div>
+      <div style="text-align:right"><div class="t-num">07:15</div><div class="t-sub">小港機場</div></div>
     </div>
     <div class="t-detail">
       <div class="t-row">班次<strong>FD234</strong></div>
@@ -1243,60 +1243,114 @@ const LUGGAGE_DATA = {
   "必備品": [
     "護照",
     "機票（電子/截圖）",
-    "訂房確認單",
-    "旅平險保單",
-    "信用卡／台幣現金／外幣現金",
+    "SIM卡(含退針)",
+    "筆、筆記本",
+    "信用卡/台幣現金/外幣現金",
     "手機",
+    "悠遊卡/一卡通",
+    "重要證件",
   ],
   "基本": [
-    "上衣",
-    "下身",
+    "上衣(約3-4件)",
+    "下身(約3-4件)",
     "內衣褲",
     "襪子",
-    "拖鞋",
+    "室內拖鞋",
     "輕薄外套",
     "睡衣",
+  ],
+  "個人清潔": [
+    "洗面乳",
+    "卸妝水",
+    "化妝水、乳液",
+    "髮油/護髮霜",
+    "面膜",
+    "牙刷、牙膏",
+    "牙線/維持器",
+    "嗽口水",
+    "梳子/小鏡子",
+    "吸油面紙",
+    "棉花棒",
+    "卸妝濕巾",
+    "髮圈",
+    "洗臉毛巾",
+    "瀏海固定膠、瀏海貼",
+    "指甲剪",
+    "小夾子",
+    "洗臉髮帶、鯊魚夾",
+    "護唇膏",
+    "防曬乳",
+    "痘痘貼",
+    "眉刀",
+    "B5修護霜",
     { subcat: "保養小包", items: [
       "化妝棉",
       "洗面乳",
       "化妝水",
       "乳液",
       "防曬乳 SPF50+",
-      "卸妝棉",
-      "面膜",
+      "卸妝濕棉",
+      "攜帶型嗽口水",
+      "嗽口杯",
+      "梳子、小鏡子",
+      "蜜粉", 
     ]},
-    "牙刷牙膏",
-    "洗髮精/潤髮乳",
-    "梳子",
-  ],
-  "額外": [
-    "行動電源",
-    "充電線",
-    "插頭轉換器",
-    "耳機",
-    "頸枕",
-    "折疊購物袋",
+   { subcat: "美妝/配件", items: [
+      "粉底",
+      "蜜粉/定妝噴霧",
+      "修容盤",
+      "刷具",
+      "眼皮貼",
+      "拋棄式小海綿",
+      "眉筆",
+      "手錶",
+    ]},   
+  ], 
+  "外出用品": [
+    "大帽子",
+    "酒巾噴瓶" 
+    "酒巾濕巾", 
+    "涼感噴霧",
+    "涼感濕巾",
+    "濕紙巾",
+    "小扇子",
+    "太陽眼鏡",
     "雨傘",
-    "保冷袋",
+    "口罩",
     "垃圾袋",
-    "熊寶貝",
+    "小包衛生紙",
+    "手機背袋",
+    "小水瓶",
   ],
-  "特殊品": [
+  "藥品": [
     "防蚊液（DEET）",
     "腸胃藥",
     "止瀉藥",
     "頭痛藥",
+    "感冒藥", 
     "OK繃",
     "口罩",
-    "胃藥/暈車藥",
+    "暈車藥",
+    "痠痛貼布",
+    "小藥膏", 
   ],
-  "旅拍用品": [
+  "3C用品": [
     "運動相機",
     "記憶卡",
     "備用電池",
     "腳架/自拍棒",
     "背包夾",
     "腳架轉接頭",
+    "插座轉接頭+延長線",
+    "USB-C充電線",
+    "Micro USB充電線",
+    "Lightning充電線",
+    "行動電源",
+    "手機掛繩",
+    "充電頭*2",
+    "手機用隨身碟",
+    "iphone 8",
+    "有線耳機", 
   ],
 };
 
