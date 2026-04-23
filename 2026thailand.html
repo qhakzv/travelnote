@@ -476,14 +476,14 @@ select.form-input { cursor: pointer; }
   <div class="info-block fade-in">
     <div class="info-head">
       <div class="info-icon" style="background:#FEF3F0">🚨</div>
-      <div><div class="info-cat">Entry</div><div class="info-title">旅遊須知</div></div>
+      <div><div class="info-cat">Information</div><div class="info-title">旅遊須知</div></div>
       <span class="tag tag-teal" style="margin-left:auto">必知</span>
     </div>
     <div class="info-body"><ul>
       <li>飛機起飛前2.5小時到機場櫃台報到</li>
       <li>1件手提行李限7KG，1件託運行李不超過20公斤</li>
       <li>泰國撥打電話至台灣泰國國際碼001+台灣國碼886+區域號碼+電話號碼</li>
-      <li>泰國的電壓為２２０伏特，如帶電器用品請自備變壓</li>
+      <li>泰國的電壓為220伏特，如帶電器用品請自備變壓</li>
       <li>泰國大部份酒店因響應環保均已不提供牙膏牙刷等私人性必需品，故薦於個人衛生等因素，建議您打包於 個人行李中</li>
     </ul></div>
   </div>
@@ -904,7 +904,7 @@ select.form-input { cursor: pointer; }
           <div class="tl-note">網紅打卡甜點店，色彩繽紛值得拍照</div>
         </div>
         <div class="tl-foot">
-          <div></div>
+          <a class="map-btn" href="https://maps.app.goo.gl/iUndtPxqgjFMuEvj6" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a>
           <div class="meet-row">
             <span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.65rem"></i> 集合</span>
             <input class="meet-input" type="time" placeholder="--:--" data-key="d3_t3" oninput="saveMeet(this)">
@@ -995,7 +995,7 @@ select.form-input { cursor: pointer; }
           <div class="tl-note">泰式風情莊園，適合拍照留念</div>
         </div>
         <div class="tl-foot">
-          <div></div>
+          <a class="map-btn" href="https://maps.app.goo.gl/y6uR8DwMwmzLkVgE9" target="_blank"><i class="fa-solid fa-location-dot"></i> Google Maps</a>
           <div class="meet-row">
             <span class="meet-label"><i class="fa-solid fa-users" style="font-size:0.65rem"></i> 集合</span>
             <input class="meet-input" type="time" placeholder="--:--" data-key="d4_t2" oninput="saveMeet(this)">
@@ -1210,9 +1210,9 @@ const SHOPPING_DATA = [
   // { emoji: "🥥", name: "椰子油護膚組", price: 420, currency: "THB" },
   // 範例格式，取消前面的 // 即可啟用，或仿照格式新增
   { img: "https://image.makewebeasy.net/makeweb/m_1920x0/vaQzGnSlA/DefaultData/LINE_ALBUM_package_white_background_240613_68.jpg", name: "Thai Tea (Extra Gold) Sachet Packed In Can 金罐泰式紅茶", price: 150, currency: "THB" },
-  { img:  "https://image.makewebeasy.net/makeweb/m_1920x0/vaQzGnSlA/DefaultData/%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%B7%E0%B8%AD_%E0%B8%8A%E0%B8%B2%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B8%AA%E0%B8%B3%E0%B9%80%E0%B8%A3%E0%B9%87%E0%B8%88%E0%B8%8A%E0%B8%99%E0%B8%B4%E0%B8%94%E0%B8%9C%E0%B8%87_500_%E0%B8%81%E0%B8%A3%E0%B8%B1%E0%B8%A1_1.jpg", name: "Instant Thai Tea 即溶泰式奶茶-500g", price: 175, currency: "THB" },
+  { img: "https://image.makewebeasy.net/makeweb/m_1920x0/vaQzGnSlA/DefaultData/%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%B7%E0%B8%AD_%E0%B8%8A%E0%B8%B2%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B8%AA%E0%B8%B3%E0%B9%80%E0%B8%A3%E0%B9%87%E0%B8%88%E0%B8%8A%E0%B8%99%E0%B8%B4%E0%B8%94%E0%B8%9C%E0%B8%87_500_%E0%B8%81%E0%B8%A3%E0%B8%B1%E0%B8%A1_1.jpg", name: "Instant Thai Tea 即溶泰式奶茶-500g", price: 175, currency: "THB" },
   { img: "https://medias.watsons.co.th/publishing/WTCTH-318845-front-zoom.jpg", name: "Fiber Flow Gummy HANDYHERB膳食纖維軟糖", price: 40, currency: "THB" },
-  { img: "https://eurasiaherbs.co/cdn/shop/files/2025-06-19_21-16-11.png", name: "Fiber Flow Gummy Plus Gluta HANDYHERB膳食纖維軟糖", price: 40, currency: "THB" },
+  { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/07/88/8856082005707/thumbnail/8856082005707_1-20250121142417-.jpg", name: "Fiber Flow Gummy Plus Gluta HANDYHERB膳食纖維軟糖", price: 40, currency: "THB" },
   { img: "https://o2o-static.lotuss.com/products/89773/75574864.jpg", name: "Dietor Day Gummy HANDYHERB減少食慾軟糖", price: 59, currency: "THB" },
   { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/22/88/8856082005622/thumbnail/8856082005622_1-20240523085206-.jpg", name: "Dietor Night Gummy HANDYHERB澱粉阻斷軟糖", price: 59, currency: "THB" },
   { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/19/88/8859835400019/thumbnail/8859835400019_1-20241031105814-.jpg", name: "Milk Tablet Q-Q Brand 皇家牛乳片-原味", price:22 , currency: "THB" },
@@ -1230,7 +1230,7 @@ const SHOPPING_DATA = [
   { img: "https://www.thaieasytobuy.com/gallery_gen/e2b9f30784a41e2796dceae130c99c50_640x640_fit.jpeg", name: "泰國皇家計畫蜂蜜", price: 38, currency: "THB" },
   { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/88/8852022033816/thumbnail/8852022033816_1-20230420160423-.jpg", name: "KEWPIE 起司醬", price: 49, currency: "THB" },
   { img: "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/23/88/8852022033823/thumbnail/8852022033823_1-20230420160353-.jpg", name: "KEWPIE 松露醬", price: 65, currency: "THB" },
-
+  { img: "https://th.taokaenoiglobal.com/wp-content/uploads/2025/09/5020503-TEMPURA-22g-163X220-cm-Original-1-827x1024.png", name: "小老闆海苔天婦羅 原味", price: 39, currency: "THB" },
 ];
 
 /* ════════════════════════════════════════
